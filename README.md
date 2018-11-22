@@ -1,0 +1,1 @@
+This is a version of the IBM DB2 LUW (Linux/Unix/Windows) ADO.NET provider included with Mono, adapted to work with libdb400. It's quite hacky.
