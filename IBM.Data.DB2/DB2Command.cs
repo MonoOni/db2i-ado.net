@@ -361,8 +361,9 @@ namespace IBM.Data.DB2
 
 		private void SetStatementTimeout()
 		{
-			short sqlRet = DB2CLIWrapper.SQLSetStmtAttr(hwndStmt, DB2Constants.SQL_ATTR_QUERY_TIMEOUT, new IntPtr(commandTimeout), 0);
-			DB2ClientUtils.DB2CheckReturn(sqlRet, DB2Constants.SQL_HANDLE_STMT, hwndStmt, "Set statement timeout.", db2Conn);
+            // XXX: Not supported IBM i
+			//short sqlRet = DB2CLIWrapper.SQLSetStmtAttr(hwndStmt, DB2Constants.SQL_ATTR_QUERY_TIMEOUT, new IntPtr(commandTimeout), 0);
+			//DB2ClientUtils.DB2CheckReturn(sqlRet, DB2Constants.SQL_HANDLE_STMT, hwndStmt, "Set statement timeout.", db2Conn);
 		}
 		#endregion
 
@@ -444,28 +445,29 @@ namespace IBM.Data.DB2
 				AllocateStatement("InternalExecuteNonQuery");
 				previousBehavior = 0;
 			}
-			if(previousBehavior != behavior)
-			{
-				if(((previousBehavior ^ behavior) & CommandBehavior.SchemaOnly) != 0)
-				{
-					sqlRet = DB2CLIWrapper.SQLSetStmtAttr(hwndStmt, DB2Constants.SQL_ATTR_DEFERRED_PREPARE, 
-						new IntPtr((behavior & CommandBehavior.SchemaOnly) != 0 ? 0 : 1), 0);
-					// TODO: don't check. what if it is not supported???
-					DB2ClientUtils.DB2CheckReturn(sqlRet, DB2Constants.SQL_HANDLE_STMT, hwndStmt, "Defered prepare.", db2Conn);
+            // XXX: Not supported under IBM i
+			//if(previousBehavior != behavior)
+			//{
+			//	if(((previousBehavior ^ behavior) & CommandBehavior.SchemaOnly) != 0)
+			//	{
+			//		sqlRet = DB2CLIWrapper.SQLSetStmtAttr(hwndStmt, DB2Constants.SQL_ATTR_DEFERRED_PREPARE, 
+			//			new IntPtr((behavior & CommandBehavior.SchemaOnly) != 0 ? 0 : 1), 0);
+			//		// TODO: don't check. what if it is not supported???
+			//		DB2ClientUtils.DB2CheckReturn(sqlRet, DB2Constants.SQL_HANDLE_STMT, hwndStmt, "Defered prepare.", db2Conn);
 
-					previousBehavior = (previousBehavior & ~CommandBehavior.SchemaOnly) | (behavior & CommandBehavior.SchemaOnly);
-				}
-				if(((previousBehavior ^ behavior) & CommandBehavior.SingleRow) != 0)
-				{
-					sqlRet = DB2CLIWrapper.SQLSetStmtAttr(hwndStmt, DB2Constants.SQL_ATTR_MAX_ROWS, 
-						new IntPtr((behavior & CommandBehavior.SingleRow) == 0 ? 0 : 1), 0);
-					// TODO: don't check. what if it is not supported???
-					DB2ClientUtils.DB2CheckReturn(sqlRet, DB2Constants.SQL_HANDLE_STMT, hwndStmt, "Set max rows", db2Conn);
+			//		previousBehavior = (previousBehavior & ~CommandBehavior.SchemaOnly) | (behavior & CommandBehavior.SchemaOnly);
+			//	}
+			//	if(((previousBehavior ^ behavior) & CommandBehavior.SingleRow) != 0)
+			//	{
+			//		sqlRet = DB2CLIWrapper.SQLSetStmtAttr(hwndStmt, DB2Constants.SQL_ATTR_MAX_ROWS, 
+			//			new IntPtr((behavior & CommandBehavior.SingleRow) == 0 ? 0 : 1), 0);
+			//		// TODO: don't check. what if it is not supported???
+			//		DB2ClientUtils.DB2CheckReturn(sqlRet, DB2Constants.SQL_HANDLE_STMT, hwndStmt, "Set max rows", db2Conn);
 
-					previousBehavior = (previousBehavior & ~CommandBehavior.SingleRow) | (behavior & CommandBehavior.SingleRow);
-				}
-				previousBehavior = behavior;
-			}
+			//		previousBehavior = (previousBehavior & ~CommandBehavior.SingleRow) | (behavior & CommandBehavior.SingleRow);
+			//	}
+			//	previousBehavior = behavior;
+			//}
 			if((Transaction == null) &&
 				!db2Conn.openConnection.autoCommit)
 			{
