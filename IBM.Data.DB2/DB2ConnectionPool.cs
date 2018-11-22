@@ -26,6 +26,7 @@ using System.Threading;
 
 namespace IBM.Data.DB2
 {
+    // XXX: This class is entirely unnecessary under libdb400
 	/// <summary>
 	/// 
 	/// </summary>
