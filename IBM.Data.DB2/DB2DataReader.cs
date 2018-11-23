@@ -235,7 +235,7 @@ namespace IBM.Data.DB2
 
 			for (short i=1; i<=fieldCount; i++) 
 			{
-                // TODO: This is likely all very wrong for DB2i
+                // TODO: This is likely all very wrong for DB2i, start with StringAnsi instead of Uni
 				sqlRet = DB2CLIWrapper.SQLColAttribute(hwndStmt, (short)i, (short)DB2Constants.SQL_DESC_NAME, ptrCharacterAttribute, buflen, ref strlen, ref numericattr);
 				DB2ClientUtils.DB2CheckReturn(sqlRet, DB2Constants.SQL_HANDLE_STMT, hwndStmt, "GetSchemaTable", db2Conn);
 				colname = Marshal.PtrToStringUni(ptrCharacterAttribute);
@@ -1287,18 +1287,23 @@ namespace IBM.Data.DB2
 			if(_resultSet[col] == null)
 			{
 				int length;
-				short sqlRet = DB2CLIWrapper.SQLGetData(this.hwndStmt, (short)(col + 1), (short)DB2Constants.SQL_C_WCHAR, (StringBuilder)null, 0, out length);
-				if(length == DB2Constants.SQL_NULL_DATA)
-				{
-					_resultSet[col] = DBNull.Value;
-				}
+                short shortLength;
+                // HACK: libdb400 GetData blows up horribly if given a 0 length; have to use ColAttribute instead
+                // (Seems ILE service program failures in a PASE program results in an immediate uncatchable SIGTERM)
+                // short sqlRet = DB2CLIWrapper.SQLGetData(this.hwndStmt, (short)(col + 1), (short)DB2Constants.SQL_CHAR, (StringBuilder)null, 0, out length);
+                short sqlRet = DB2CLIWrapper.SQLColAttribute(this.hwndStmt, (short)(col + 1), DB2Constants.SQL_DESC_PRECISION, null, 0, out shortLength, out length);
+                DB2ClientUtils.DB2CheckReturn(sqlRet, DB2Constants.SQL_HANDLE_STMT, this.hwndStmt, "Failed to get the column's precision/length.");
+
+				IntPtr mem = Marshal.AllocHGlobal(length + 2);
+                // We have to shuffle the DBNull check to after the allocation because of the preceding comment.
+                // Also use StringAnsi/SQL_C_CHAR because UTF-8.
+				sqlRet = DB2CLIWrapper.SQLGetData(this.hwndStmt, (short)(col + 1), (short)DB2Constants.SQL_C_CHAR, mem, length + 2, out length);
+                if (length == DB2Constants.SQL_NULL_DATA)
+                    _resultSet[col] = DBNull.Value;
 				else
-				{
-					IntPtr mem = Marshal.AllocHGlobal(length + 2);
-					sqlRet = DB2CLIWrapper.SQLGetData(this.hwndStmt, (short)(col + 1), (short)DB2Constants.SQL_C_WCHAR, mem, length + 2, out length);
-					_resultSet[col] = Marshal.PtrToStringUni(mem);
-					Marshal.FreeHGlobal(mem);
-				}
+                    _resultSet[col] = Marshal.PtrToStringAnsi(mem);
+				Marshal.FreeHGlobal(mem);
+				
 			}			
 			return _resultSet[col];
 		}

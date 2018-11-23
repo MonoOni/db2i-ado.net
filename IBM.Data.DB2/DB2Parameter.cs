@@ -651,6 +651,7 @@ namespace IBM.Data.DB2
 				case DB2Type.LongVarGraphic:
 				case DB2Type.Clob:
 				case DB2Type.DbClob:
+                    // XXX: Split wchar out
 					dataVal = Marshal.PtrToStringUni(internalBuffer, Math.Min(Size, length / 2));
 					break;
 				case DB2Type.Binary:
