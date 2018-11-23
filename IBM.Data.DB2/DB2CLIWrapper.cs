@@ -166,108 +166,112 @@ namespace IBM.Data.DB2
 		static public short Initialize(ref IntPtr pEnvHandle)
 		{
 			string OSVersion = Environment.OSVersion.ToString();
-			useLibCli = true;
-			if(OSVersion.Substring(0,4)=="Unix"){
-				useLibCli = false;
-			}
-		 	return DB2CLIWrapper.SQLAllocHandle(DB2Constants.SQL_HANDLE_ENV, IntPtr.Zero, out pEnvHandle);
+            // XXX: This is commented out for now to focus on libdb400;
+            // theoretically we can make this work with both libdb400 and LUW
+			//useLibCli = true;
+			//if(OSVersion.Substring(0,4)=="Unix"){
+			//	useLibCli = false;
+			//}
+            StaticWrapper400.SQLOverrideCCSID400(1208);
+            return DB2CLIWrapper.SQLAllocHandle(DB2Constants.SQL_HANDLE_ENV, IntPtr.Zero, out pEnvHandle);
 		}
 
+        // XXX: all refs to 36 -> 400, fix this if you want 
 		static public short SQLAllocHandle(short handleType, IntPtr inputHandle, out IntPtr outputHandle)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLAllocHandle(handleType, inputHandle, out outputHandle);
-			return StaticWrapper36.SQLAllocHandle(handleType, inputHandle, out outputHandle);
+			return StaticWrapper400.SQLAllocHandle(handleType, inputHandle, out outputHandle);
 		}
 		static public short SQLFreeHandle(short handleType, IntPtr inputHandle)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLFreeHandle(handleType, inputHandle);
-			return StaticWrapper36.SQLFreeHandle(handleType, inputHandle);
+			return StaticWrapper400.SQLFreeHandle(handleType, inputHandle);
 		}
 		static public short SQLFreeStmt(IntPtr StatementHandle, short option)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLFreeStmt(StatementHandle, option);
-			return StaticWrapper36.SQLFreeStmt(StatementHandle, option);
+			return StaticWrapper400.SQLFreeStmt(StatementHandle, option);
 		}
 		static public short SQLConnect(IntPtr sqlHdbc, string serverName, short serverNameLength, string userName, short userNameLength, string authentication, short authenticationLength)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLConnect(sqlHdbc, serverName, serverNameLength, userName, userNameLength, authentication, authenticationLength);
-			return StaticWrapper36.SQLConnect(sqlHdbc, serverName, serverNameLength, userName, userNameLength, authentication, authenticationLength);
+			return StaticWrapper400.SQLConnect(sqlHdbc, serverName, serverNameLength, userName, userNameLength, authentication, authenticationLength);
 		}
 		static public short SQLColAttribute(IntPtr StatementHandle, short ColumnNumber, short FieldIdentifier, StringBuilder CharacterAttribute, short BufferLength, out short StringLength, out int NumericAttribute)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLColAttribute(StatementHandle, ColumnNumber, FieldIdentifier, CharacterAttribute, BufferLength, out StringLength, out NumericAttribute);
-			return StaticWrapper36.SQLColAttribute(StatementHandle, ColumnNumber, FieldIdentifier, CharacterAttribute, BufferLength, out StringLength, out NumericAttribute);
+			return StaticWrapper400.SQLColAttribute(StatementHandle, ColumnNumber, FieldIdentifier, CharacterAttribute, BufferLength, out StringLength, out NumericAttribute);
 		}
 		static public short SQLGetConnectAttr(IntPtr ConnectionHandle, int Attribute, IntPtr ValuePtr, int BufferLength, out int StringLengthPtr)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLGetConnectAttr(ConnectionHandle, Attribute, ValuePtr, BufferLength, out StringLengthPtr);
-			return StaticWrapper36.SQLGetConnectAttr(ConnectionHandle, Attribute, ValuePtr, BufferLength, out StringLengthPtr);
+			return StaticWrapper400.SQLGetConnectAttr(ConnectionHandle, Attribute, ValuePtr, BufferLength, out StringLengthPtr);
 		}
 		static public short SQLGetConnectAttr(IntPtr ConnectionHandle, int Attribute, out int Value, int BufferLength, IntPtr Zero)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLGetConnectAttr(ConnectionHandle, Attribute, out Value, BufferLength, Zero);
-			return StaticWrapper36.SQLGetConnectAttr(ConnectionHandle, Attribute, out Value, BufferLength, Zero);
+			return StaticWrapper400.SQLGetConnectAttr(ConnectionHandle, Attribute, out Value, BufferLength, Zero);
 		}
 		static public short SQLColAttribute(IntPtr StatementHandle, short ColumnNumber, short FieldIdentifier, IntPtr CharacterAttribute, short BufferLength, ref short StringLength, ref int NumericAttribute)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLColAttribute(StatementHandle, ColumnNumber, FieldIdentifier, CharacterAttribute, BufferLength, ref StringLength, ref NumericAttribute);
-			return StaticWrapper36.SQLColAttribute(StatementHandle, ColumnNumber, FieldIdentifier, CharacterAttribute, BufferLength, ref StringLength, ref NumericAttribute);
+			return StaticWrapper400.SQLColAttribute(StatementHandle, ColumnNumber, FieldIdentifier, CharacterAttribute, BufferLength, ref StringLength, ref NumericAttribute);
 		}
 		static public short SQLMoreResults(IntPtr StatementHandle)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLMoreResults(StatementHandle);
-			return StaticWrapper36.SQLMoreResults(StatementHandle);
+			return StaticWrapper400.SQLMoreResults(StatementHandle);
 		}
 		static public short SQLGetData(IntPtr StatementHandle, short ColumnNumber, short TargetType, StringBuilder sb, int BufferLength, out int StrLen_or_Ind)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLGetData(StatementHandle, ColumnNumber, TargetType, sb, BufferLength, out StrLen_or_Ind);
-			return StaticWrapper36.SQLGetData(StatementHandle, ColumnNumber, TargetType, sb, BufferLength, out StrLen_or_Ind);
+			return StaticWrapper400.SQLGetData(StatementHandle, ColumnNumber, TargetType, sb, BufferLength, out StrLen_or_Ind);
 		}
 		static public short SQLGetData(IntPtr StatementHandle, short ColumnNumber, short TargetType, IntPtr TargetPtr, int BufferLength, out int StrLen_or_Ind)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLGetData(StatementHandle, ColumnNumber, TargetType, TargetPtr, BufferLength, out StrLen_or_Ind);
-			return StaticWrapper36.SQLGetData(StatementHandle, ColumnNumber, TargetType, TargetPtr, BufferLength, out StrLen_or_Ind);
+			return StaticWrapper400.SQLGetData(StatementHandle, ColumnNumber, TargetType, TargetPtr, BufferLength, out StrLen_or_Ind);
 		}
 		static public short SQLGetData(IntPtr StatementHandle, short ColumnNumber, short TargetType, byte[] TargetPtr, int BufferLength, out int StrLen_or_Ind)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLGetData(StatementHandle, ColumnNumber, TargetType, TargetPtr, BufferLength, out StrLen_or_Ind);
-			return StaticWrapper36.SQLGetData(StatementHandle, ColumnNumber, TargetType, TargetPtr, BufferLength, out StrLen_or_Ind);
+			return StaticWrapper400.SQLGetData(StatementHandle, ColumnNumber, TargetType, TargetPtr, BufferLength, out StrLen_or_Ind);
 		}
 		static public short SQLDisconnect(IntPtr sqlHdbc)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLDisconnect(sqlHdbc);
-			return StaticWrapper36.SQLDisconnect(sqlHdbc);
+			return StaticWrapper400.SQLDisconnect(sqlHdbc);
 		}
 		static public short SQLGetDiagRec( short handleType, IntPtr handle, short recNum, StringBuilder sqlState, out int nativeError, StringBuilder errorMessage, int bufferLength, out short textLengthPtr)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLGetDiagRec( handleType, handle, recNum, sqlState, out nativeError, errorMessage, bufferLength, out textLengthPtr);
-			return StaticWrapper36.SQLGetDiagRec( handleType, handle, recNum, sqlState, out nativeError, errorMessage, bufferLength, out textLengthPtr);
+			return StaticWrapper400.SQLGetDiagRec( handleType, handle, recNum, sqlState, out nativeError, errorMessage, bufferLength, out textLengthPtr);
 		}
 		static public short SQLSetConnectAttr(IntPtr sqlHdbc, int sqlAttr, IntPtr sqlValuePtr, int sqlValueLength)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLSetConnectAttr(sqlHdbc, sqlAttr, sqlValuePtr, sqlValueLength);
-			return StaticWrapper36.SQLSetConnectAttr(sqlHdbc, sqlAttr, sqlValuePtr, sqlValueLength);
+			return StaticWrapper400.SQLSetConnectAttr(sqlHdbc, sqlAttr, sqlValuePtr, sqlValueLength);
 		}
 		static public short SQLSetStmtAttr(IntPtr sqlHdbc, int sqlAttr, IntPtr sqlValuePtr, int sqlValueLength)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLSetStmtAttr(sqlHdbc, sqlAttr, sqlValuePtr, sqlValueLength);
-			return StaticWrapper36.SQLSetStmtAttr(sqlHdbc, sqlAttr, sqlValuePtr, sqlValueLength);
+			return StaticWrapper400.SQLSetStmtAttr(sqlHdbc, sqlAttr, sqlValuePtr, sqlValueLength);
 		}
 
 		//for bulk operations
@@ -275,81 +279,81 @@ namespace IBM.Data.DB2
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLSetStmtAttr(sqlHdbc, sqlAttr, sqlValuePtr, sqlValueLength);
-			return StaticWrapper36.SQLSetStmtAttr(sqlHdbc, sqlAttr, sqlValuePtr, sqlValueLength);
+			return StaticWrapper400.SQLSetStmtAttr(sqlHdbc, sqlAttr, sqlValuePtr, sqlValueLength);
 		}
 
 		static public short SQLEndTran (short handleType, IntPtr handle, short fType)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLEndTran (handleType, handle, fType);
-			return StaticWrapper36.SQLEndTran (handleType, handle, fType);
+			return StaticWrapper400.SQLEndTran (handleType, handle, fType);
 		}
 		static public short SQLCancel(IntPtr handle)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLCancel(handle);
-			return StaticWrapper36.SQLCancel(handle);
+			return StaticWrapper400.SQLCancel(handle);
 		}
 		static public short SQLNumResultCols(IntPtr handle, out short numCols)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLNumResultCols(handle, out numCols);
-			return StaticWrapper36.SQLNumResultCols(handle, out numCols);
+			return StaticWrapper400.SQLNumResultCols(handle, out numCols);
 		}
 		static public short SQLFetch(IntPtr handle)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLFetch(handle);
-			return StaticWrapper36.SQLFetch(handle);
+			return StaticWrapper400.SQLFetch(handle);
 		}
 		static public short SQLRowCount(IntPtr stmtHandle, out int numRows)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLRowCount(stmtHandle, out numRows);
-			return StaticWrapper36.SQLRowCount(stmtHandle, out numRows);
+			return StaticWrapper400.SQLRowCount(stmtHandle, out numRows);
 		}
 		static public short SQLExecute(IntPtr handle)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLExecute(handle);
-			return StaticWrapper36.SQLExecute(handle);
+			return StaticWrapper400.SQLExecute(handle);
 		}
 		static public short SQLExecDirect(IntPtr stmtHandle, string stmt, int length)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLExecDirect(stmtHandle, stmt, length);
-			return StaticWrapper36.SQLExecDirect(stmtHandle, stmt, length);
+			return StaticWrapper400.SQLExecDirect(stmtHandle, stmt, length);
 		}
 		static public short SQLDriverConnect(IntPtr hdbc, IntPtr windowHandle, string inConnectStr, short inStrLength, StringBuilder outConnectStr, short outStrCapacity, out short outStrLengthReturned, int completion)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLDriverConnect(hdbc, windowHandle, inConnectStr, inStrLength, outConnectStr, outStrCapacity, out outStrLengthReturned, completion);
-			return StaticWrapper36.SQLDriverConnect(hdbc, windowHandle, inConnectStr, inStrLength, outConnectStr, outStrCapacity, out outStrLengthReturned, completion);
+			return StaticWrapper400.SQLDriverConnect(hdbc, windowHandle, inConnectStr, inStrLength, outConnectStr, outStrCapacity, out outStrLengthReturned, completion);
 		}
 		static public short SQLPrepare(IntPtr stmtHandle, string stmt, int length)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLPrepare(stmtHandle, stmt, length);
-			return StaticWrapper36.SQLPrepare(stmtHandle, stmt, length);
+			return StaticWrapper400.SQLPrepare(stmtHandle, stmt, length);
 		}
 		static public short SQLBindParameter(IntPtr stmtHandle, short paramNumber, short dataType, short valueType, short paramType, int colSize, short decDigits, IntPtr dataBufferPtr, int dataBufferLength, IntPtr StrLen_or_IndPtr)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLBindParameter(stmtHandle, paramNumber, dataType, valueType, paramType, colSize, decDigits, dataBufferPtr, dataBufferLength, StrLen_or_IndPtr);
-			return StaticWrapper36.SQLBindParameter(stmtHandle, paramNumber, dataType, valueType, paramType, colSize, decDigits, dataBufferPtr, dataBufferLength, StrLen_or_IndPtr);
+			return StaticWrapper400.SQLBindParameter(stmtHandle, paramNumber, dataType, valueType, paramType, colSize, decDigits, dataBufferPtr, dataBufferLength, StrLen_or_IndPtr);
 		}
 
 		static public short SQLBindParameter(IntPtr stmtHandle, short paramNumber, short dataType, short valueType, short paramType, int colSize, short decDigits, int[] dataBufferPtr, int dataBufferLength, IntPtr StrLen_or_IndPtr)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLBindParameter(stmtHandle, paramNumber, dataType, valueType, paramType, colSize, decDigits, dataBufferPtr, dataBufferLength, StrLen_or_IndPtr);
-			return StaticWrapper36.SQLBindParameter(stmtHandle, paramNumber, dataType, valueType, paramType, colSize, decDigits, dataBufferPtr, dataBufferLength, StrLen_or_IndPtr);
+			return StaticWrapper400.SQLBindParameter(stmtHandle, paramNumber, dataType, valueType, paramType, colSize, decDigits, dataBufferPtr, dataBufferLength, StrLen_or_IndPtr);
 		}
 		public static short SQLGetInfo(IntPtr sqlHdbc, short fInfoType, [Out] StringBuilder rgbInfoValue, short cbInfoValueMax, out short pcbInfoValue)
 		{
 			if(useLibCli)
 				return StaticWrapperCli.SQLGetInfo(sqlHdbc, fInfoType, rgbInfoValue, cbInfoValueMax, out pcbInfoValue);
-			return StaticWrapper36.SQLGetInfo(sqlHdbc, fInfoType, rgbInfoValue, cbInfoValueMax, out pcbInfoValue);
+			return StaticWrapper400.SQLGetInfo(sqlHdbc, fInfoType, rgbInfoValue, cbInfoValueMax, out pcbInfoValue);
 		}
 
 		/// <summary>
@@ -681,7 +685,257 @@ namespace IBM.Data.DB2
 			{
 				return SQLGetInfo_ ((int) sqlHdbc, fInfoType, rgbInfoValue, cbInfoValueMax, out pcbInfoValue);
 			}
-		}
-	}
+        }
+
+        // Some notes on this wrapper:
+        //  * Use the ANSI functions instead of wchar, so we can use UTF-8
+        //    by overriding CCSID to 1208. libdb400 doesn't bind the wide funcs
+        //    while Cairns' replacement version does, but the future of that is
+        //    uncertain due to his and Aaron's departure from i
+        public class StaticWrapper400
+        {
+            const string libname = "libdb400";
+            static int intptr_size = IntPtr.Size;
+
+            [DllImport(libname)]
+            public static extern int SQLOverrideCCSID400(int ccsid);
+
+            [DllImport(libname, EntryPoint = "SQLAllocHandle")]
+            static extern short SQLAllocHandle_(short handleType, int inputHandle, out int outputHandle);
+
+            public static short SQLAllocHandle(short handleType, IntPtr inputHandle, out IntPtr outputHandle)
+            {
+                int output;
+                short ret = SQLAllocHandle_(handleType, (int)inputHandle, out output);
+                outputHandle = new IntPtr(output);
+                return ret;
+            }
+
+            [DllImport(libname, EntryPoint = "SQLFreeHandle")]
+            static extern short SQLFreeHandle_(short handleType, int inputHandle);
+
+            public static short SQLFreeHandle(short handleType, IntPtr inputHandle)
+            {
+                return SQLFreeHandle_(handleType, (int)inputHandle);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLFreeStmt")]
+            static extern short SQLFreeStmt_(int StatementHandle, short option); // should be 'ushort'
+
+            public static short SQLFreeStmt(IntPtr StatementHandle, short option)
+            {
+                return SQLFreeStmt_((int)StatementHandle, option);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLConnect", CharSet = CharSet.Ansi)]
+            static extern short SQLConnect_(int sqlHdbc, string serverName, short serverNameLength, string userName,
+                            short userNameLength, string authentication, short authenticationLength);
+            public static short SQLConnect(IntPtr sqlHdbc, string serverName, short serverNameLength, string userName,
+                            short userNameLength, string authentication, short authenticationLength)
+            {
+                return SQLConnect_((int)sqlHdbc, serverName, serverNameLength, userName, userNameLength, authentication, authenticationLength);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLColAttribute")]
+            static extern short SQLColAttribute_(int StatementHandle, short ColumnNumber, short FieldIdentifier,
+                            [Out] StringBuilder CharacterAttribute, short BufferLength, out short StringLength,
+                            out int NumericAttribute);
+            public static short SQLColAttribute(IntPtr StatementHandle, short ColumnNumber, short FieldIdentifier,
+                            [Out] StringBuilder CharacterAttribute, short BufferLength, out short StringLength,
+                            out int NumericAttribute)
+            {
+                return SQLColAttribute_((int)StatementHandle, ColumnNumber, FieldIdentifier, CharacterAttribute, BufferLength,
+                            out StringLength, out NumericAttribute);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLGetConnectAttr")]
+            static extern short SQLGetConnectAttr_(int ConnectionHandle, int Attribute, [Out] IntPtr ValuePtr, int BufferLength, out int StringLengthPtr);
+
+            public static short SQLGetConnectAttr(IntPtr ConnectionHandle, int Attribute, [Out] IntPtr ValuePtr, int BufferLength, out int StringLengthPtr)
+            {
+                return SQLGetConnectAttr_((int)ConnectionHandle, Attribute, ValuePtr, BufferLength, out StringLengthPtr);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLGetConnectAttr")]
+            static extern short SQLGetConnectAttr_(int ConnectionHandle, int Attribute, out int Value, int BufferLength, IntPtr Zero);
+            public static short SQLGetConnectAttr(IntPtr ConnectionHandle, int Attribute, out int Value, int BufferLength, IntPtr Zero)
+            {
+                return SQLGetConnectAttr_((int)ConnectionHandle, Attribute, out Value, BufferLength, Zero);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLColAttribute")]
+            static extern short SQLColAttribute_(int StatementHandle, short ColumnNumber, short FieldIdentifier, IntPtr CharacterAttribute, short BufferLength, ref short StringLength, ref int NumericAttribute);
+            public static short SQLColAttribute(IntPtr StatementHandle, short ColumnNumber, short FieldIdentifier, IntPtr CharacterAttribute, short BufferLength, ref short StringLength, ref int NumericAttribute)
+            {
+                return SQLColAttribute_((int)StatementHandle, ColumnNumber, FieldIdentifier, CharacterAttribute, BufferLength,
+                            ref StringLength, ref NumericAttribute);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLMoreResults")]
+            static extern short SQLMoreResults_(int StatementHandle);
+
+            public static short SQLMoreResults(IntPtr StatementHandle)
+            {
+                return SQLMoreResults_((int)StatementHandle);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLGetData")]
+            static extern short SQLGetData_(int StatementHandle, short ColumnNumber, short TargetType, [Out] StringBuilder sb, int BufferLength, out int StrLen_or_Ind);
+            public static short SQLGetData(IntPtr StatementHandle, short ColumnNumber, short TargetType, [Out] StringBuilder sb,
+                            int BufferLength, out int StrLen_or_Ind)
+            {
+                return SQLGetData_((int)StatementHandle, ColumnNumber, TargetType, sb, BufferLength, out StrLen_or_Ind);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLGetData")]
+            static extern short SQLGetData_(int StatementHandle, short ColumnNumber, short TargetType, IntPtr TargetPtr, int BufferLength, out int StrLen_or_Ind);
+            public static short SQLGetData(IntPtr StatementHandle, short ColumnNumber, short TargetType, IntPtr TargetPtr, int BufferLength, out int StrLen_or_Ind)
+            {
+                return SQLGetData_((int)StatementHandle, ColumnNumber, TargetType, TargetPtr, BufferLength, out StrLen_or_Ind);
+            }
+
+
+            [DllImport(libname, EntryPoint = "SQLGetData")]
+            static extern short SQLGetData_(int StatementHandle, short ColumnNumber, short TargetType, [Out] byte[] TargetPtr, int BufferLength, out int StrLen_or_Ind);
+            public static short SQLGetData(IntPtr StatementHandle, short ColumnNumber, short TargetType, [Out] byte[] TargetPtr, int BufferLength, out int StrLen_or_Ind)
+            {
+                return SQLGetData_((int)StatementHandle, ColumnNumber, TargetType, TargetPtr, BufferLength, out StrLen_or_Ind);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLDisconnect")]
+            static extern short SQLDisconnect_(int sqlHdbc);
+            public static short SQLDisconnect(IntPtr sqlHdbc)
+            {
+                return SQLDisconnect_((int)sqlHdbc);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLGetDiagRec")]
+            static extern short SQLGetDiagRec_(short handleType, int handle, short recNum, [Out] StringBuilder sqlState, out int nativeError, [Out] StringBuilder errorMessage, int bufferLength, out short textLengthPtr);
+            public static short SQLGetDiagRec(short handleType, IntPtr handle, short recNum, [Out] StringBuilder sqlState, out int nativeError, [Out] StringBuilder errorMessage, int bufferLength, out short textLengthPtr)
+            {
+                return SQLGetDiagRec_(handleType, (int)handle, recNum, sqlState, out nativeError, errorMessage, bufferLength, out textLengthPtr);
+            }
+
+
+            [DllImport(libname, EntryPoint = "SQLSetConnectAttr")]
+            static extern short SQLSetConnectAttr_(int sqlHdbc, int sqlAttr, [In] IntPtr sqlValuePtr, int sqlValueLength);
+            public static short SQLSetConnectAttr(IntPtr sqlHdbc, int sqlAttr, [In] IntPtr sqlValuePtr, int sqlValueLength)
+            {
+                return SQLSetConnectAttr_((int)sqlHdbc, sqlAttr, sqlValuePtr, sqlValueLength);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLSetStmtAttr")]
+            static extern short SQLSetStmtAttr_(int sqlHdbc, int sqlAttr, [In] IntPtr sqlValuePtr, int sqlValueLength);
+            public static short SQLSetStmtAttr(IntPtr sqlHdbc, int sqlAttr, [In] IntPtr sqlValuePtr, int sqlValueLength)
+            {
+                return SQLSetStmtAttr_((int)sqlHdbc, sqlAttr, sqlValuePtr, sqlValueLength);
+            }
+
+
+            //for bulk operations
+            [DllImport(libname, EntryPoint = "SQLSetStmtAttr")]
+            static extern short SQLSetStmtAttr_(int sqlHdbc, int sqlAttr, ushort[] sqlValuePtr, int sqlValueLength);
+            public static short SQLSetStmtAttr(IntPtr sqlHdbc, int sqlAttr, ushort[] sqlValuePtr, int sqlValueLength)
+            {
+                return SQLSetStmtAttr_((int)sqlHdbc, sqlAttr, sqlValuePtr, sqlValueLength);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLEndTran")]
+            static extern short SQLEndTran_(short handleType, int handle, short fType);
+            public static short SQLEndTran(short handleType, IntPtr handle, short fType)
+            {
+                return SQLEndTran_(handleType, (int)handle, fType);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLCancel")]
+            static extern short SQLCancel_(int handle);
+            public static short SQLCancel(IntPtr handle)
+            {
+                return SQLCancel_((int)handle);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLNumResultCols")]
+            static extern short SQLNumResultCols_(int handle, out short numCols);
+            public static short SQLNumResultCols(IntPtr handle, out short numCols)
+            {
+                return SQLNumResultCols_((int)handle, out numCols);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLFetch")]
+            static extern short SQLFetch_(int handle);
+            public static short SQLFetch(IntPtr handle)
+            {
+                return SQLFetch_((int)handle);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLRowCount")]
+            static extern short SQLRowCount_(int stmtHandle, out int numRows);
+            public static short SQLRowCount(IntPtr stmtHandle, out int numRows)
+            {
+                return SQLRowCount_((int)stmtHandle, out numRows);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLExecute")]
+            static extern short SQLExecute_(int handle);
+            public static short SQLExecute(IntPtr handle)
+            {
+                return SQLExecute_((int)handle);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLExecDirect")]
+            static extern short SQLExecDirect_(int stmtHandle, string stmt, int length);
+            public static short SQLExecDirect(IntPtr stmtHandle, string stmt, int length)
+            {
+                return SQLExecDirect_((int)stmtHandle, stmt, length);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLDriverConnect")]
+            static extern short SQLDriverConnect_(int hdbc, IntPtr windowHandle, [In] string inConnectStr, [In] short inStrLength, [Out] StringBuilder outConnectStr, [Out] short outStrCapacity, out short outStrLengthReturned, [In] int completion);
+            public static short SQLDriverConnect(IntPtr hdbc, IntPtr windowHandle, [In] string inConnectStr, [In] short inStrLength, [Out] StringBuilder outConnectStr, [Out] short outStrCapacity, out short outStrLengthReturned, [In] int completion)
+            {
+                return SQLDriverConnect_((int)hdbc, windowHandle, inConnectStr, inStrLength, outConnectStr, outStrCapacity, out outStrLengthReturned, completion);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLPrepare")]
+            static extern short SQLPrepare_(int stmtHandle, string stmt, int length);
+            public static short SQLPrepare(IntPtr stmtHandle, string stmt, int length)
+            {
+                return SQLPrepare_((int)stmtHandle, stmt, length);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLBindParameter")]
+            static extern short SQLBindParameter_(int stmtHandle, short paramNumber,
+                short dataType, short valueType, short paramType, int colSize, short decDigits,
+                IntPtr dataBufferPtr, int dataBufferLength, IntPtr StrLen_or_IndPtr);
+            public static short SQLBindParameter(IntPtr stmtHandle, short paramNumber,
+                short dataType, short valueType, short paramType, int colSize, short decDigits,
+                IntPtr dataBufferPtr, int dataBufferLength, IntPtr StrLen_or_IndPtr)
+            {
+                return SQLBindParameter_((int)stmtHandle, paramNumber,
+                            dataType, valueType, paramType, colSize, decDigits,
+                            dataBufferPtr, dataBufferLength, StrLen_or_IndPtr);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLBindParameter")]
+            static extern short SQLBindParameter_(int stmtHandle, short paramNumber,
+                short dataType, short valueType, short paramType, int colSize, short decDigits,
+                int[] dataBufferPtr, int dataBufferLength, IntPtr StrLen_or_IndPtr);
+            public static short SQLBindParameter(IntPtr stmtHandle, short paramNumber,
+                short dataType, short valueType, short paramType, int colSize, short decDigits,
+                int[] dataBufferPtr, int dataBufferLength, IntPtr StrLen_or_IndPtr)
+            {
+                return SQLBindParameter_((int)stmtHandle, paramNumber,
+                            dataType, valueType, paramType, colSize, decDigits,
+                            dataBufferPtr, dataBufferLength, StrLen_or_IndPtr);
+            }
+
+            [DllImport(libname, EntryPoint = "SQLGetInfo")]
+            static extern short SQLGetInfo_(int sqlHdbc, short fInfoType, [Out] StringBuilder rgbInfoValue, short cbInfoValueMax, out short pcbInfoValue);
+            public static short SQLGetInfo(IntPtr sqlHdbc, short fInfoType, [Out] StringBuilder rgbInfoValue, short cbInfoValueMax, out short pcbInfoValue)
+            {
+                return SQLGetInfo_((int)sqlHdbc, fInfoType, rgbInfoValue, cbInfoValueMax, out pcbInfoValue);
+            }
+        }
+    }
 }
 
