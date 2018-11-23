@@ -736,7 +736,7 @@ namespace IBM.Data.DB2
                 return SQLConnect_((int)sqlHdbc, serverName, serverNameLength, userName, userNameLength, authentication, authenticationLength);
             }
 
-            [DllImport(libname, EntryPoint = "SQLColAttribute")]
+            [DllImport(libname, EntryPoint = "SQLColAttributes")]
             static extern short SQLColAttribute_(int StatementHandle, short ColumnNumber, short FieldIdentifier,
                             [Out] StringBuilder CharacterAttribute, short BufferLength, out short StringLength,
                             out int NumericAttribute);
@@ -763,7 +763,7 @@ namespace IBM.Data.DB2
                 return SQLGetConnectAttr_((int)ConnectionHandle, Attribute, out Value, BufferLength, Zero);
             }
 
-            [DllImport(libname, EntryPoint = "SQLColAttribute")]
+            [DllImport(libname, EntryPoint = "SQLColAttributes")]
             static extern short SQLColAttribute_(int StatementHandle, short ColumnNumber, short FieldIdentifier, IntPtr CharacterAttribute, short BufferLength, ref short StringLength, ref int NumericAttribute);
             public static short SQLColAttribute(IntPtr StatementHandle, short ColumnNumber, short FieldIdentifier, IntPtr CharacterAttribute, short BufferLength, ref short StringLength, ref int NumericAttribute)
             {

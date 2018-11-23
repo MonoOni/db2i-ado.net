@@ -236,7 +236,7 @@ namespace IBM.Data.DB2
 			for (short i=1; i<=fieldCount; i++) 
 			{
                 // TODO: This is likely all very wrong for DB2i
-				sqlRet = DB2CLIWrapper.SQLColAttribute(hwndStmt, (short)i, (short)DB2Constants.SQL_DESC_COLUMN_NAME, ptrCharacterAttribute, buflen, ref strlen, ref numericattr);
+				sqlRet = DB2CLIWrapper.SQLColAttribute(hwndStmt, (short)i, (short)DB2Constants.SQL_DESC_NAME, ptrCharacterAttribute, buflen, ref strlen, ref numericattr);
 				DB2ClientUtils.DB2CheckReturn(sqlRet, DB2Constants.SQL_HANDLE_STMT, hwndStmt, "GetSchemaTable", db2Conn);
 				colname = Marshal.PtrToStringUni(ptrCharacterAttribute);
 				
@@ -467,7 +467,7 @@ namespace IBM.Data.DB2
 				int numericAttribute = 0;
 				
 				sb.Clear();
-				sqlRet = DB2CLIWrapper.SQLColAttribute(hwndStmt, (short)(i + 1), (short)DB2Constants.SQL_DESC_COLUMN_NAME, sb, (short)sb.Capacity, out strlen, out numericAttribute);
+				sqlRet = DB2CLIWrapper.SQLColAttribute(hwndStmt, (short)(i + 1), (short)DB2Constants.SQL_DESC_NAME, sb, (short)sb.Capacity, out strlen, out numericAttribute);
 				DB2ClientUtils.DB2CheckReturn(sqlRet, DB2Constants.SQL_HANDLE_STMT, hwndStmt, "GetSchemaTable");
 				columnInfo[i].Colname = sb.ToString();
 				columnsNames[columnInfo[i].Colname.ToUpper()] = i;

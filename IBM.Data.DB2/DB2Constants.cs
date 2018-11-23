@@ -179,29 +179,29 @@ namespace IBM.Data.DB2
 		public const int SQL_RETURN_VALUE       = 5;
 		
 		/*Defines for SQLColAttributeW*/
-		public const int SQL_DESC_ALLOC_TYPE = 1099;
+		public const int SQL_DESC_ALLOC_TYPE = 99;
 		public const int SQL_DESC_AUTO_UNIQUE_VALUE = 11;
 		public const int SQL_DESC_BASE_COLUMN_NAME = 22;
 		public const int SQL_DESC_BASE_TABLE_NAME = 23;
 		public const int SQL_DESC_COLUMN_CATALOG_NAME = 17;
-		public const int SQL_DESC_COLUMN_NAME = 1;
+		//public const int SQL_DESC_COLUMN_NAME = 1; // XXX: WRONG for DB2i
 		public const int SQL_DESC_SCHEMA_NAME = 16;
 		public const int SQL_DESC_COLUMN_TABLE_NAME = 15;
 		public const int SQL_DESC_CONCISE_TYPE = 2;
-		public const int SQL_DESC_COUNT = 1001;
-		public const int SQL_DESC_DATA_PTR = 1010;
-		public const int SQL_DESC_DATETIME_INTERVAL_CODE = 1007;
-		public const int SQL_DESC_INDICATOR_PTR = 1009;
-		public const int SQL_DESC_LENGTH = 1003;
-		public const int SQL_DESC_NAME = 1011;
-		public const int SQL_DESC_NULLABLE = 1008;
-		public const int SQL_DESC_OCTET_LENGTH = 1013;
-		public const int SQL_DESC_OCTET_LENGTH_PTR = 1004;
-		public const int SQL_DESC_PRECISION = 1005;
-		public const int SQL_DESC_SCALE = 1006;
-		public const int SQL_DESC_TYPE = 1002;
+		public const int SQL_DESC_COUNT = 1;
+		public const int SQL_DESC_DATA_PTR = 0;
+		public const int SQL_DESC_DATETIME_INTERVAL_CODE = 7;
+		public const int SQL_DESC_INDICATOR_PTR = 9;
+		public const int SQL_DESC_LENGTH = 3;
+		public const int SQL_DESC_NAME = 11;
+		public const int SQL_DESC_NULLABLE = 8;
+		public const int SQL_DESC_OCTET_LENGTH = 13;
+		public const int SQL_DESC_OCTET_LENGTH_PTR = 4;
+		public const int SQL_DESC_PRECISION = 5;
+		public const int SQL_DESC_SCALE = 6;
+		public const int SQL_DESC_TYPE = 2;
 		public const int SQL_DESC_TYPE_NAME = 14;
-		public const int SQL_DESC_UNNAMED = 1012;
+		public const int SQL_DESC_UNNAMED = 12;
 		public const int SQL_DESC_UNSIGNED = 8;
 		public const int SQL_DESC_UPDATABLE = 10; 
 	}
