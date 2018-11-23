@@ -62,11 +62,11 @@ namespace IBM.Data.DB2
 		public const long  SQL_TXN_NOCOMMIT				= 0x00000020L;
 
 		/* Connect options */
-		public const int  SQL_ATTR_TXN_ISOLATION= 108;
-		public const int  SQL_ATTR_AUTOCOMMIT	= 102;
+		public const int  SQL_ATTR_TXN_ISOLATION= 108; // XXX: sqlcli.h says this is 0, which seems suspicious
+		public const int  SQL_ATTR_AUTOCOMMIT	= 10003;//102;
 
-		/* attribute */
-		public const int  SQL_ATTR_ANSI_APP		= 115;
+        /* attribute */
+        public const int  SQL_ATTR_ANSI_APP		= 115;
 		public const int  SQL_AA_TRUE           = 1;      /* the application is an ANSI app */
 		public const int  SQL_AA_FALSE          = 0;      /* the application is a Unicode app */
 
