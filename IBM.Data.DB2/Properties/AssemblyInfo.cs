@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("IBM.Data.DB2")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("IBM.Data.DB2 (libdb400)")]
+[assembly: AssemblyDescription("Adapted DB2 ADO.NET provider for libdb400")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Calvin Buckley")]
 [assembly: AssemblyProduct("IBM.Data.DB2")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCopyright("Copyright © Calvin Buckley 2018, Copyright © IBM 2004")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
