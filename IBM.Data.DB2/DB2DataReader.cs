@@ -235,6 +235,7 @@ namespace IBM.Data.DB2
 
 			for (short i=1; i<=fieldCount; i++) 
 			{
+                // TODO: This is likely all very wrong for DB2i
 				sqlRet = DB2CLIWrapper.SQLColAttribute(hwndStmt, (short)i, (short)DB2Constants.SQL_DESC_COLUMN_NAME, ptrCharacterAttribute, buflen, ref strlen, ref numericattr);
 				DB2ClientUtils.DB2CheckReturn(sqlRet, DB2Constants.SQL_HANDLE_STMT, hwndStmt, "GetSchemaTable", db2Conn);
 				colname = Marshal.PtrToStringUni(ptrCharacterAttribute);
@@ -567,6 +568,8 @@ namespace IBM.Data.DB2
 					case DB2Constants.SQL_TYPE_CLOB:
 					case DB2Constants.SQL_CHAR:
 					case DB2Constants.SQL_VARCHAR:
+                    // XXX: DB2i numerics don't really map to Decimal?
+                    case DB2Constants.SQL_NUMERIC:
 						return GetStringInternal(col);
 					case DB2Constants.SQL_TYPE_BLOB:
 					case DB2Constants.SQL_TYPE_BINARY:
@@ -826,6 +829,8 @@ namespace IBM.Data.DB2
 					return "LONGVARBINARY";
 				case DB2Constants.SQL_VARBINARY:
 					return "VARBINARY";
+                case DB2Constants.SQL_NUMERIC:
+                    return "NUMERIC";
 			}
 			throw new NotImplementedException("Unknown SQL type " + columnInfo[col].Sqltype);
 		}
@@ -1403,6 +1408,8 @@ namespace IBM.Data.DB2
 				case DB2Constants.SQL_CHAR:
 				case DB2Constants.SQL_VARCHAR:
 				case DB2Constants.SQL_TYPE_CLOB:
+                // XXX: DB2i loves NUMERIC, but System.Decimal not so much
+                case DB2Constants.SQL_NUMERIC:
 					return typeof(string);
 				case DB2Constants.SQL_TYPE_BLOB:
 				case DB2Constants.SQL_TYPE_BINARY:

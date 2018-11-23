@@ -78,6 +78,8 @@ namespace IBM.Data.DB2
 				case DB2Constants.SQL_CHAR:
 				case DB2Constants.SQL_VARCHAR:
 				case DB2Constants.SQL_TYPE_CLOB:
+                // XXX: more DB2i numeric confusion
+                case DB2Constants.SQL_NUMERIC:
 					return typeof(string);
 				case DB2Constants.SQL_TYPE_BLOB:
 				case DB2Constants.SQL_TYPE_BINARY:
