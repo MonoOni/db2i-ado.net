@@ -460,7 +460,7 @@ namespace IBM.Data.DB2
 						(db2DataType == DB2Constants.SQL_DECIMAL))
 					{
 						db2LastUsedDataType = DB2Constants.SQL_VARCHAR;
-						db2CType = DB2Constants.SQL_C_WHAR;
+						db2CType = DB2Constants.SQL_C_CHAR;
 					}
 				}
 			}
