@@ -164,8 +164,8 @@ namespace IBM.Data.DB2
 				dbType = value;
 				switch(dbType)
 				{
-					case DbType.AnsiString:             db2Type = DB2Type.VarChar;    db2DataType = DB2Constants.SQL_WCHAR;          break;
-					case DbType.AnsiStringFixedLength:  db2Type = DB2Type.Char;       db2DataType = DB2Constants.SQL_WCHAR;          break;
+					case DbType.AnsiString:             db2Type = DB2Type.VarChar;    db2DataType = DB2Constants.SQL_CHAR;           break;
+					case DbType.AnsiStringFixedLength:  db2Type = DB2Type.Char;       db2DataType = DB2Constants.SQL_CHAR;           break;
 					case DbType.Binary:                 db2Type = DB2Type.Binary;     db2DataType = DB2Constants.SQL_VARBINARY;      break;
 					case DbType.Boolean:                db2Type = DB2Type.SmallInt;   db2DataType = DB2Constants.SQL_BIT;            break;
 					case DbType.Byte:                   db2Type = DB2Type.SmallInt;   db2DataType = DB2Constants.SQL_UTINYINT;       break;
@@ -174,20 +174,20 @@ namespace IBM.Data.DB2
 					case DbType.DateTime:               db2Type = DB2Type.Timestamp;  db2DataType = DB2Constants.SQL_TYPE_TIMESTAMP; break;
 					case DbType.Decimal:                db2Type = DB2Type.Decimal;    db2DataType = DB2Constants.SQL_DECIMAL;        break;
 					case DbType.Double:                 db2Type = DB2Type.Double;     db2DataType = DB2Constants.SQL_DOUBLE;         break;
-					case DbType.Guid:                   db2Type = DB2Type.Binary;     db2DataType = DB2Constants.SQL_WCHAR;          break;
+					case DbType.Guid:                   db2Type = DB2Type.Binary;     db2DataType = DB2Constants.SQL_CHAR;           break;
 					case DbType.Int16:                  db2Type = DB2Type.SmallInt;   db2DataType = DB2Constants.SQL_SMALLINT;       break;
 					case DbType.Int32:                  db2Type = DB2Type.Integer;    db2DataType = DB2Constants.SQL_INTEGER;        break;
 					case DbType.Int64:                  db2Type = DB2Type.BigInt;     db2DataType = DB2Constants.SQL_BIGINT;         break;
 					case DbType.Object:                 db2Type = DB2Type.Invalid;    db2DataType = DB2Constants.SQL_UNKNOWN_TYPE;   break;
 					case DbType.SByte:                  db2Type = DB2Type.SmallInt;   db2DataType = DB2Constants.SQL_UTINYINT;       break;
 					case DbType.Single:                 db2Type = DB2Type.Float;      db2DataType = DB2Constants.SQL_REAL;           break;
-					case DbType.String:                 db2Type = DB2Type.VarChar;    db2DataType = DB2Constants.SQL_WCHAR;          break;
-					case DbType.StringFixedLength:      db2Type = DB2Type.Char;       db2DataType = DB2Constants.SQL_WCHAR;          break;
+					case DbType.String:                 db2Type = DB2Type.VarChar;    db2DataType = DB2Constants.SQL_CHAR;           break;
+					case DbType.StringFixedLength:      db2Type = DB2Type.Char;       db2DataType = DB2Constants.SQL_CHAR;           break;
 					case DbType.Time:                   db2Type = DB2Type.Time;       db2DataType = DB2Constants.SQL_TYPE_TIME;      break;
 					case DbType.UInt16:                 db2Type = DB2Type.SmallInt;   db2DataType = DB2Constants.SQL_SMALLINT;       break;
 					case DbType.UInt32:                 db2Type = DB2Type.Integer;    db2DataType = DB2Constants.SQL_INTEGER;        break;
 					case DbType.UInt64:                 db2Type = DB2Type.BigInt;     db2DataType = DB2Constants.SQL_BIGINT;         break;
-					case DbType.VarNumeric:             db2Type = DB2Type.Numeric;    db2DataType = DB2Constants.SQL_WCHAR;          break;
+					case DbType.VarNumeric:             db2Type = DB2Type.Numeric;    db2DataType = DB2Constants.SQL_CHAR;           break;
 					default:
 						throw new NotSupportedException("Value is of unknown data type");
 				}
