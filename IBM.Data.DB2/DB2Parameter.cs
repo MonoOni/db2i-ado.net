@@ -22,6 +22,7 @@
 using System;
 using System.Data;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace IBM.Data.DB2
 {
@@ -347,7 +348,7 @@ namespace IBM.Data.DB2
 			{
 				switch(((IConvertible)Value).GetTypeCode())
 				{
-					case TypeCode.Char:      dbType = DbType.Byte;       db2Type = DB2Type.SmallInt;    db2DataType = DB2Constants.SQL_WCHAR;           break;
+					case TypeCode.Char:      dbType = DbType.Byte;       db2Type = DB2Type.SmallInt;    db2DataType = DB2Constants.SQL_CHAR;            break;
 					case TypeCode.Boolean:   dbType = DbType.Byte;       db2Type = DB2Type.SmallInt;    db2DataType = DB2Constants.SQL_BIT;             break;
 					case TypeCode.SByte:
 					case TypeCode.Byte:      dbType = DbType.Byte;       db2Type = DB2Type.SmallInt;    db2DataType = DB2Constants.SQL_UTINYINT;        break;
@@ -361,7 +362,7 @@ namespace IBM.Data.DB2
 					case TypeCode.Double:    dbType = DbType.Double;     db2Type = DB2Type.Double;      db2DataType = DB2Constants.SQL_DOUBLE;          break;
 					case TypeCode.Decimal:   dbType = DbType.Decimal;    db2Type = DB2Type.Decimal;     db2DataType = DB2Constants.SQL_DECIMAL;         break;
 					case TypeCode.DateTime:  dbType = DbType.DateTime;   db2Type = DB2Type.Timestamp;   db2DataType = DB2Constants.SQL_TYPE_TIMESTAMP;  break;
-					case TypeCode.String:    dbType = DbType.String;     db2Type = DB2Type.VarChar;     db2DataType = DB2Constants.SQL_WCHAR;           break;
+					case TypeCode.String:    dbType = DbType.String;     db2Type = DB2Type.VarChar;     db2DataType = DB2Constants.SQL_CHAR;            break;
 
 					case TypeCode.Object:
 					case TypeCode.DBNull:
@@ -478,7 +479,16 @@ namespace IBM.Data.DB2
 							db2LastUsedDataType = DB2Constants.SQL_TYPE_BLOB;
 						}
 						break;
-					case DB2Constants.SQL_VARBINARY:
+                    case DB2Constants.SQL_NUMERIC: // XXX: seriously, these should be turned into Decimal one day
+                    case DB2Constants.SQL_CHAR: // Like SQL_DECIMAL conversion, use UTF-8 explicit
+                        string tmpStringUtf8 = Convert.ToString(Value);
+                        var tmpBytesUtf8 = Encoding.UTF8.GetBytes(tmpStringUtf8);
+                        inLength = Math.Min(tmpBytesUtf8.Length, requiredMemory);
+                        Marshal.Copy(tmpBytesUtf8, 0, internalBuffer, inLength);
+                        db2LastUsedDataType = DB2Constants.SQL_VARCHAR;
+                        db2CType = DB2Constants.SQL_C_CHAR;
+                        break;
+                    case DB2Constants.SQL_VARBINARY:
 						byte[] tmpBytes = (byte[])Value;
 						inLength = tmpBytes.Length;
 						if((Size > 0) && (inLength > Size))
@@ -509,7 +519,7 @@ namespace IBM.Data.DB2
 						db2CType = DB2Constants.SQL_C_DOUBLE;
 						break;
 					case DB2Constants.SQL_DECIMAL:
-						byte[] tmpDecimalData = System.Text.Encoding.UTF8.GetBytes(
+						byte[] tmpDecimalData = Encoding.UTF8.GetBytes(
 							Convert.ToDecimal(Value).ToString(System.Globalization.CultureInfo.InvariantCulture));
 						inLength =  Math.Min(tmpDecimalData.Length, requiredMemory);
 						Marshal.Copy(tmpDecimalData, 0, internalBuffer, inLength);
@@ -547,9 +557,13 @@ namespace IBM.Data.DB2
 			{
 				switch (db2DataType) 
 				{
-					case DB2Constants.SQL_WCHAR:
-						db2LastUsedDataType = DB2Constants.SQL_VARGRAPHIC;
-						db2CType = DB2Constants.SQL_C_WCHAR;
+                    case DB2Constants.SQL_WCHAR:
+                        db2LastUsedDataType = DB2Constants.SQL_VARGRAPHIC;
+                        db2CType = DB2Constants.SQL_C_WCHAR;
+                        break;
+                    case DB2Constants.SQL_CHAR:
+						db2LastUsedDataType = DB2Constants.SQL_VARCHAR;
+						db2CType = DB2Constants.SQL_C_CHAR;
 						break;
 					case DB2Constants.SQL_VARBINARY:
 						db2CType = DB2Constants.SQL_TYPE_BINARY;
@@ -571,6 +585,7 @@ namespace IBM.Data.DB2
 					case DB2Constants.SQL_DOUBLE:
 						db2CType = DB2Constants.SQL_C_DOUBLE;
 						break;
+                    case DB2Constants.SQL_NUMERIC:
 					case DB2Constants.SQL_DECIMAL:
 						db2LastUsedDataType = DB2Constants.SQL_VARCHAR;
 						db2CType = DB2Constants.SQL_C_CHAR;
@@ -646,13 +661,15 @@ namespace IBM.Data.DB2
 				case DB2Type.Char:
 				case DB2Type.VarChar:
 				case DB2Type.LongVarChar:
-				case DB2Type.Graphic:
+                case DB2Type.Clob:
+                case DB2Type.DbClob:
+                case DB2Type.Numeric: // XXX: Another case of stringification (doesn't like being a Decimal)
+                    dataVal = Marshal.PtrToStringAnsi(internalBuffer, Math.Min(Size, length / 2));
+                    break;
+                case DB2Type.Graphic:
 				case DB2Type.VarGraphic:
-				case DB2Type.LongVarGraphic:
-				case DB2Type.Clob:
-				case DB2Type.DbClob:
-                    // XXX: Split wchar out
-					dataVal = Marshal.PtrToStringUni(internalBuffer, Math.Min(Size, length / 2));
+				case DB2Type.LongVarGraphic: // XXX: we're utf8 now
+                    dataVal = Marshal.PtrToStringUni(internalBuffer, Math.Min(Size, length / 2));
 					break;
 				case DB2Type.Binary:
 				case DB2Type.VarBinary:
@@ -692,7 +709,6 @@ namespace IBM.Data.DB2
 
 				case DB2Type.Invalid:
 				case DB2Type.Real:
-				case DB2Type.Numeric:
 				case DB2Type.RowId:
 				case DB2Type.XmlReader:
 					throw new NotImplementedException();
