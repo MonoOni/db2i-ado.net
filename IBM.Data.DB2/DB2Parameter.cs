@@ -214,7 +214,7 @@ namespace IBM.Data.DB2
 					case ParameterDirection.Input:			db2Direction = DB2Constants.SQL_PARAM_INPUT;		break;
 					case ParameterDirection.Output:			db2Direction = DB2Constants.SQL_PARAM_OUTPUT;		break;
 					case ParameterDirection.InputOutput:	db2Direction = DB2Constants.SQL_PARAM_INPUT_OUTPUT;	break;
-					case ParameterDirection.ReturnValue:	db2Direction = DB2Constants.SQL_RETURN_VALUE;		break;
+					case ParameterDirection.ReturnValue:	db2Direction = DB2Constants.SQL_RETURN_VALUE;		break; // XXX: Not implemented on i, likely to kill QSQCLI
 				}
 			}
 		}

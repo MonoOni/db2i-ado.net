@@ -173,10 +173,10 @@ namespace IBM.Data.DB2
 		/* Defines for SQLBindParameter and SQLProcedureColumns */
 		public const int SQL_PARAM_TYPE_UNKNOWN = 0;
 		public const int SQL_PARAM_INPUT		= 1;
-		public const int SQL_PARAM_INPUT_OUTPUT = 2;
+        public const int SQL_PARAM_INPUT_OUTPUT = 3;//2;
 		public const int SQL_RESULT_COL         = 3;
-		public const int SQL_PARAM_OUTPUT       = 4;
-		public const int SQL_RETURN_VALUE       = 5;
+		public const int SQL_PARAM_OUTPUT       = 2;//4;
+		public const int SQL_RETURN_VALUE       = 5; // XXX: Different on i!
 		
 		/*Defines for SQLColAttributeW*/
 		public const int SQL_DESC_ALLOC_TYPE = 99;
