@@ -126,22 +126,22 @@ namespace IBM.Data.DB2
 					case DB2Type.Double:         dbType = DbType.Double;            db2DataType = DB2Constants.SQL_DOUBLE;         break;
 					case DB2Type.Float:          dbType = DbType.Single;            db2DataType = DB2Constants.SQL_REAL;           break;
 					case DB2Type.Decimal:        dbType = DbType.Decimal;           db2DataType = DB2Constants.SQL_DECIMAL;        break;
-					case DB2Type.Numeric:        dbType = DbType.VarNumeric;        db2DataType = DB2Constants.SQL_WCHAR;          break;
+					case DB2Type.Numeric:        dbType = DbType.VarNumeric;        db2DataType = DB2Constants.SQL_CHAR;           break;
 					case DB2Type.Date:           dbType = DbType.Date;              db2DataType = DB2Constants.SQL_TYPE_DATE;      break;
 					case DB2Type.Time:           dbType = DbType.Time;              db2DataType = DB2Constants.SQL_TYPE_TIME;      break;
 					case DB2Type.Timestamp:      dbType = DbType.DateTime;          db2DataType = DB2Constants.SQL_TYPE_TIMESTAMP; break;
-					case DB2Type.Char:           dbType = DbType.String;            db2DataType = DB2Constants.SQL_WCHAR;          break;
-					case DB2Type.VarChar:        dbType = DbType.StringFixedLength; db2DataType = DB2Constants.SQL_WCHAR;          break;
-					case DB2Type.LongVarChar:    dbType = DbType.String;            db2DataType = DB2Constants.SQL_WCHAR;          break;
+					case DB2Type.Char:           dbType = DbType.String;            db2DataType = DB2Constants.SQL_CHAR;           break;
+					case DB2Type.VarChar:        dbType = DbType.StringFixedLength; db2DataType = DB2Constants.SQL_CHAR;           break;
+					case DB2Type.LongVarChar:    dbType = DbType.String;            db2DataType = DB2Constants.SQL_CHAR;           break;
 					case DB2Type.Binary:         dbType = DbType.Binary;            db2DataType = DB2Constants.SQL_VARBINARY;      break;
 					case DB2Type.VarBinary:      dbType = DbType.Binary;            db2DataType = DB2Constants.SQL_VARBINARY;      break;
 					case DB2Type.LongVarBinary:  dbType = DbType.String;            db2DataType = DB2Constants.SQL_WCHAR;          break;
 					case DB2Type.Graphic:        dbType = DbType.StringFixedLength; db2DataType = DB2Constants.SQL_WCHAR;          break;
 					case DB2Type.VarGraphic:     dbType = DbType.String;            db2DataType = DB2Constants.SQL_WCHAR;          break;
 					case DB2Type.LongVarGraphic: dbType = DbType.String;            db2DataType = DB2Constants.SQL_WCHAR;          break;
-					case DB2Type.Clob:           dbType = DbType.String;            db2DataType = DB2Constants.SQL_WCHAR;          break;
+					case DB2Type.Clob:           dbType = DbType.String;            db2DataType = DB2Constants.SQL_CHAR;           break;
 					case DB2Type.Blob:           dbType = DbType.Binary;            db2DataType = DB2Constants.SQL_VARBINARY;      break;
-					case DB2Type.DbClob:         dbType = DbType.String;            db2DataType = DB2Constants.SQL_WCHAR;          break;
+					case DB2Type.DbClob:         dbType = DbType.String;            db2DataType = DB2Constants.SQL_CHAR;           break;
 					case DB2Type.Datalink:       dbType = DbType.Byte;              db2DataType = DB2Constants.SQL_VARBINARY;      break;
 					case DB2Type.RowId:          dbType = DbType.Decimal;           db2DataType = DB2Constants.SQL_DECIMAL;        break;
 					case DB2Type.XmlReader:      dbType = DbType.String;            db2DataType = DB2Constants.SQL_WCHAR;          break;
@@ -413,7 +413,8 @@ namespace IBM.Data.DB2
 				requiredMemory = 4;
 			}
 			if((db2DataType == DB2Constants.SQL_VARBINARY) ||
-				(db2DataType == DB2Constants.SQL_WCHAR))
+				(db2DataType == DB2Constants.SQL_WCHAR) ||
+                (db2DataType == DB2Constants.SQL_CHAR))
 			{
 				if(Size <= 0)
 				{
@@ -421,9 +422,11 @@ namespace IBM.Data.DB2
 						throw new ArgumentException("Size not specified");
 					if(Value == DBNull.Value)
 						requiredMemory = 0;
-					else if(Value is string)
-						requiredMemory = ((string)Value).Length;
-					else if(Value is byte[])
+					else if(Value is string && db2DataType == DB2Constants.SQL_CHAR)
+						requiredMemory = Encoding.UTF8.GetByteCount((string)Value); // instead of Value.Length
+                    else if(Value is string)
+                        requiredMemory = ((string)Value).Length;
+                    else if(Value is byte[])
 						requiredMemory = ((byte[])Value).Length;
 					else
 						throw new ArgumentException("wrong type!?");
@@ -456,8 +459,8 @@ namespace IBM.Data.DB2
 					if((db2DataType == DB2Constants.SQL_UNKNOWN_TYPE) || 
 						(db2DataType == DB2Constants.SQL_DECIMAL))
 					{
-						db2LastUsedDataType = DB2Constants.SQL_VARGRAPHIC;
-						db2CType = DB2Constants.SQL_C_WCHAR;
+						db2LastUsedDataType = DB2Constants.SQL_VARCHAR;
+						db2CType = DB2Constants.SQL_C_WHAR;
 					}
 				}
 			}
